@@ -11,11 +11,15 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.FileMappings
 {
     public class XmlMapItem : IFileMapping
     {
-        private string FilePath { get; }
-        private MapItemType ItemType { get; }
-        
-        public XmlMapItem(MapItemType itemType, string fileName)
-        { 
+        private string FilePath { get; set; }
+        private MapItemType ItemType { get; set; }
+
+        public XmlMapItem()
+        {
+        }
+
+        public void Initialize(MapItemType itemType, string fileName)
+        {
             FilePath = FileExtensions.GetMappedFilePath(RulesConstants.MappingsDirectory, fileName);
             ItemType = itemType;
         }

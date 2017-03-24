@@ -2,6 +2,7 @@
 using EditorEnhancementToolkit.Foundation.ContentEditor.FileMappings;
 using Sitecore.Rules.Actions;
 using EditorEnhancementToolkit.Foundation.ContentEditor.ItemMapping;
+using Sitecore.Configuration;
 
 
 namespace EditorEnhancementToolkit.Foundation.ContentEditor.Rules.Actions
@@ -12,7 +13,8 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Rules.Actions
 
         public override void Apply(T ruleContext)
         {
-            var mappedFileItems = new XmlMapItem(MapItemType.All, FileName);
+            var mappedFileItems = (XmlMapItem)Factory.CreateObject("editorEnhancedToolkit/xmlMapItem", false);
+            mappedFileItems.Initialize(MapItemType.All, FileName);
 
             foreach (var item in mappedFileItems.GetItems<IMapItem>())
             {

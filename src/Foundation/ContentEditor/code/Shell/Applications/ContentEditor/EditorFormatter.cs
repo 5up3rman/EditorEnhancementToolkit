@@ -45,16 +45,17 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Shell.Applications.C
             // We want to make sure the Item is under the Content Node and that the item is not null. 
             if (args.Item == null || !args.Item.Paths.IsContentItem)
                 return;
-
+            
             // Run the rules and set it to MappedItems
-            var rules = new ContentEditorRulesProcessor(args.Item);
+            var rules = (ContentEditorRulesProcessor)Factory.CreateObject("editorEnhancedToolkit/contentEditorRulesProcessor", false);
+            rules.ProcessRules(args.Item);
 
             MappedItems = rules.MappedItems;
         }
 
         #region Customizations
 
-        public void RenderSection(Editor.Section section, System.Web.UI.Control parent, bool readOnly)
+        public void RenderSection(Language language, Editor.Section section, System.Web.UI.Control parent, bool readOnly)
         {
             // Get the MappedItem that is a section and matches this Sections Name.
             var mappedSection =
@@ -65,7 +66,7 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Shell.Applications.C
                 return;
 
             // Get the Customized Section Name from the MappedSection if it is not null, if null
-            var sectionName = !string.IsNullOrWhiteSpace(mappedSection?.NewTitle) ? mappedSection.NewTitle : section.DisplayName;
+            var sectionName = !string.IsNullOrWhiteSpace(mappedSection?.NewTitle) ? Translate.TextByLanguage(mappedSection.NewTitle, language) : Translate.TextByLanguage(section.DisplayName, language);
             var sectionCollapsed = section.IsSectionCollapsed;
             var renderFields = !sectionCollapsed || UserOptions.ContentEditor.RenderCollapsedSections;
             var customInlineStyles = mappedSection?.CustomInlineStyle.Split('|').ToList() ?? new List<string>();
@@ -129,13 +130,13 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Shell.Applications.C
         public void RenderLabel(System.Web.UI.Control parent, Editor.Field field, Item fieldType, IMapItem mappedField, bool readOnly)
         {
             var itemField = field.ItemField;
-            var language = Arguments.Language;
+            var language = itemField.Language;
             var typeKey = itemField.TypeKey;
             var helpLink = HttpUtility.HtmlAttributeEncode(itemField.HelpLink);
             var description = string.Empty;
             var toolTip = !string.IsNullOrEmpty(mappedField?.ShortDescription) ? mappedField?.ShortDescription : itemField.ToolTip;
             var labelStyle = !string.IsNullOrEmpty(mappedField?.CustomInlineStyle) ? $" style=\"{mappedField.CustomInlineStyle}\" " : string.Empty;
-            var fieldTitle = !string.IsNullOrEmpty(mappedField?.NewTitle) ? mappedField.NewTitle : field.TemplateField.GetTitle(language);
+            var fieldTitle = !string.IsNullOrEmpty(mappedField?.NewTitle) ? Translate.TextByLanguage(mappedField.NewTitle, language) : field.TemplateField.GetTitle(language);
 
             if (string.IsNullOrEmpty(fieldTitle))
                 fieldTitle = field.TemplateField.IgnoreDictionaryTranslations ? itemField.Name : Translate.Text(itemField.Name);
@@ -206,7 +207,7 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Shell.Applications.C
                 if(controlId.Contains("virtualSection"))
                     htmlTextWriter.Write(imageBuilder2.ToString());
 
-                htmlTextWriter.Write(Translate.Text(displayName));
+                htmlTextWriter.Write(displayName);
                 htmlTextWriter.Write("</div>");
             }
 
@@ -463,13 +464,13 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Shell.Applications.C
             this.AddLiteralControl(parent, "</td></tr></table>");
         }
 
-        public void RenderSections(System.Web.UI.Control parent, Editor.Sections sections, bool readOnly)
+        public void RenderSections(Language language, System.Web.UI.Control parent, Editor.Sections sections, bool readOnly)
         {
             Context.ClientPage.ClientResponse.DisableOutput();
             this.AddLiteralControl(parent, "<div class=\"scEditorSections\">");
 
             for (int index = 0; index < sections.Count; ++index)
-                this.RenderSection(sections[index], parent, readOnly);
+                this.RenderSection(language, sections[index], parent, readOnly);
 
             this.AddLiteralControl(parent, "</div>");
             Context.ClientPage.ClientResponse.EnableOutput();

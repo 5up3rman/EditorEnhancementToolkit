@@ -1,0 +1,7 @@
+<virtualSection>
+	<title>Favorite Fields</title>
+	<iconPath>/temp/iconcache/office/32x32/dude2.png</iconPath>
+	<sortOrder>-100</sortOrder>
+	<isCollapsed>false</isCollapsed>
+	<fields>__Never Publish|__Workflow state|ArticleTitle</fields>
+</virtualSection>

@@ -2,6 +2,7 @@
 using System.Linq;
 using EditorEnhancementToolkit.Foundation.ContentEditor.Enum;
 using EditorEnhancementToolkit.Foundation.ContentEditor.Rules;
+using Sitecore.Configuration;
 using Sitecore.Data.Fields;
 using Sitecore.Pipelines.GetChromeData;
 
@@ -21,8 +22,10 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Pipelines.GetChromeD
 
             if (args.Item != null)
             {
-                var rules = new ContentEditorRulesProcessor(args.Item);
-                var fld = rules.MappedItems.FirstOrDefault(x => x.Type.Equals(MapItemType.Field) && x.Title.Equals(field?.Name) && !string.IsNullOrWhiteSpace(x.NewTitle));
+                var rules = (ContentEditorRulesProcessor)Factory.CreateObject("editorEnhancedToolkit/contentEditorRulesProcessor", false);
+                rules.ProcessRules(args.Item);
+
+                var fld = rules.MappedItems?.FirstOrDefault(x => x.Type.Equals(MapItemType.Field) && x.Title.Equals(field?.Name) && !string.IsNullOrWhiteSpace(x.NewTitle));
 
                 if (fld != null)
                 {

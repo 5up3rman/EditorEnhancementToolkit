@@ -4,7 +4,7 @@ using Sitecore.Rules.Conditions;
 
 namespace EditorEnhancementToolkit.Foundation.ContentEditor.Rules.Conditions
 {
-    public class IsItemCondition<T> : WhenCondition<T> where T : ContentEditorRuleContext
+    public class IsItemCondition<T> : WhenCondition<T> where T : RuleContext
     {
         public ID ItemId { get; set; }
         

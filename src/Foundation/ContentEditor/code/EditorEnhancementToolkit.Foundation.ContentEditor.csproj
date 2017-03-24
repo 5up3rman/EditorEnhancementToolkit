@@ -95,11 +95,13 @@
     <Compile Include="Enum\MapItemType.cs" />
     <Compile Include="ItemMapping\MapItemBase.cs" />
     <Compile Include="Pipelines\GetChromeData\InitializeChromeCustomFieldDisplayName.cs" />
+    <Compile Include="Pipelines\GetContentEditorFields\GetFields.cs" />
     <Compile Include="Pipelines\RenderContentEditor\RenderCustomizedContentEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rules\Actions\HideFields.cs" />
     <Compile Include="Rules\Actions\HideSections.cs" />
     <Compile Include="Rules\Actions\MapFile.cs" />
+    <Compile Include="Rules\Actions\MapVirtualSectionFile.cs" />
     <Compile Include="Rules\Actions\SetFieldLabelStyle.cs" />
     <Compile Include="Rules\Actions\SetFieldNames.cs" />
     <Compile Include="Rules\Actions\SetFieldSource.cs" />
@@ -112,6 +114,8 @@
     <Compile Include="Rules\IContentEditor.cs" />
     <Compile Include="Rules\RulesConstants.cs" />
     <Compile Include="Shell\Applications\ContentEditor\EditorFormatter.cs" />
+    <Compile Include="VirtualSectionMapping\IVirtualSection.cs" />
+    <Compile Include="VirtualSectionMapping\VirtualSection.cs" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
