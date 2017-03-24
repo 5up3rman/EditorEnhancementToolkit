@@ -53,6 +53,7 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.FileMappings
                 Title = item.ChildNodes["originalname"]?.InnerText.Trim() ?? string.Empty,
                 NewTitle = item.ChildNodes["newtitle"]?.InnerText.Trim() ?? string.Empty,
                 ShortDescription = item.ChildNodes["shortdescription"]?.InnerText.Trim() ?? string.Empty,
+                CustomInlineStyle = item.ChildNodes["custominlinestyle"]?.InnerText.Trim() ?? string.Empty,
                 Hide = item.ChildNodes["hide"]?.InnerText.Trim().ToBool() ?? false
             }).Where(item => item.Type.Equals(MapItemType.Section) || item.Type.Equals(MapItemType.Field)).Cast<T>());
 

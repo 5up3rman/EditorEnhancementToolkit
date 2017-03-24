@@ -68,8 +68,17 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Shell.Applications.C
             var sectionName = !string.IsNullOrWhiteSpace(mappedSection?.NewTitle) ? mappedSection.NewTitle : section.DisplayName;
             var sectionCollapsed = section.IsSectionCollapsed;
             var renderFields = !sectionCollapsed || UserOptions.ContentEditor.RenderCollapsedSections;
-            
-            RenderSectionBegin(parent, section.ControlID, section.Name, sectionName, section.Icon, sectionCollapsed, renderFields);
+            var customInlineStyles = mappedSection?.CustomInlineStyle.Split('|').ToList() ?? new List<string>();
+            string sectionTitleBar = string.Empty, sectionOuterPanel = string.Empty, sectionInnerPanel = string.Empty;
+
+            if (customInlineStyles.Count == 3)
+            {
+                sectionTitleBar = customInlineStyles[0];
+                sectionOuterPanel = customInlineStyles[1];
+                sectionInnerPanel = customInlineStyles[2];
+            }
+             
+            RenderSectionBegin(parent, section.ControlID, section.Name, sectionName, section.Icon, sectionCollapsed, renderFields, sectionTitleBar, sectionOuterPanel, sectionInnerPanel);
 
             if (renderFields)
             {
@@ -125,6 +134,7 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Shell.Applications.C
             var helpLink = HttpUtility.HtmlAttributeEncode(itemField.HelpLink);
             var description = string.Empty;
             var toolTip = !string.IsNullOrEmpty(mappedField?.ShortDescription) ? mappedField?.ShortDescription : itemField.ToolTip;
+            var labelStyle = !string.IsNullOrEmpty(mappedField?.CustomInlineStyle) ? $" style=\"{mappedField.CustomInlineStyle}\" " : string.Empty;
             var fieldTitle = !string.IsNullOrEmpty(mappedField?.NewTitle) ? mappedField.NewTitle : field.TemplateField.GetTitle(language);
 
             if (string.IsNullOrEmpty(fieldTitle))
@@ -162,7 +172,7 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Shell.Applications.C
             if (itemField.Description.Length > 0)
                 description = $" title=\"{HttpUtility.HtmlAttributeEncode(itemField.Description)}\"";
 
-            var fieldLabel = $"<div class=\"scEditorFieldLabel\"{description}>{fieldTitle}</div>";
+            var fieldLabel = $"<div class=\"scEditorFieldLabel\"{description} {labelStyle}>{fieldTitle}</div>";
 
             AddLiteralControl(parent, fieldLabel);
         }
@@ -175,16 +185,27 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Shell.Applications.C
             {
                 var collapsedCss = isCollapsed ? "scEditorSectionCaptionCollapsed" : "scEditorSectionCaptionExpanded";
                 var sectionJs = UserOptions.ContentEditor.RenderCollapsedSections ? $"javascript:scContent.toggleSection('{controlId}','{sectionName}')" : $"javascript:return scForm.postRequest('','','','{StringUtil.EscapeQuote($"ToggleSection(\"{sectionName}\",\"{(isCollapsed ? "1" : "0")}\")")}')";
-                var sectionHeader = $"<div id=\"{controlId}\" class=\"{collapsedCss}\" onclick=\"{sectionJs}\">";
+                var titleBarStyle = !string.IsNullOrWhiteSpace(sectionTitleBarStyle) ? $" style=\"{sectionTitleBarStyle}\"" : string.Empty;
+                var sectionHeader = $"<div id=\"{controlId}\" class=\"{collapsedCss}\"{titleBarStyle} onclick=\"{sectionJs}\">";
                 var imageBuilder1 = new ImageBuilder
                 {
                     ID = controlId + "_Glyph",
                     Src = isCollapsed ? "Images/accordion_down.png" : "Images/accordion_up.png",
                     Class = "scEditorSectionCaptionGlyph"
                 };
+                var imageBuilder2 = new ImageBuilder
+                {
+                    Src = Images.GetThemedImageSource(icon, ImageDimension.id16x16),
+                    Class = "scEditorSectionCaptionIcon",
+                    Attributes = { {"style", "margin-right:16px;"} }
+                };
 
                 htmlTextWriter.Write(sectionHeader);
                 htmlTextWriter.Write(imageBuilder1.ToString());
+
+                if(controlId.Contains("virtualSection"))
+                    htmlTextWriter.Write(imageBuilder2.ToString());
+
                 htmlTextWriter.Write(Translate.Text(displayName));
                 htmlTextWriter.Write("</div>");
             }
@@ -192,9 +213,11 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Shell.Applications.C
             if (renderFields || !isCollapsed)
             {
                 // Set the Title Bar and Section Panel's custom Inline Style
+                var outerPanelStyle = !string.IsNullOrWhiteSpace(sectionOuterPanelStyle) ? $" style=\"{sectionOuterPanelStyle}\"" : string.Empty;
+                var innerPanelStyle = !string.IsNullOrWhiteSpace(sectionInnerPanelStyle) ? $" style=\"{sectionInnerPanelStyle}\"" : string.Empty;
                 var displaySection = !isCollapsed || !Arguments.ShowSections ? string.Empty : " style=\"display:none\"";
                 var sectionPanelCssClass = Arguments.ShowSections ? "scEditorSectionPanelCell" : "scEditorSectionPanelCell_NoSections";
-                var sectionPanel = $"<table width=\"100%\" class=\"scEditorSectionPanel\"{displaySection}><tr><td class=\"{sectionPanelCssClass}\">";
+                var sectionPanel = $"<table width=\"100%\" class=\"scEditorSectionPanel\"{displaySection}{outerPanelStyle}><tr><td class=\"{sectionPanelCssClass}\"{innerPanelStyle}>";
 
                 htmlTextWriter.Write(sectionPanel);
             }
@@ -204,12 +227,16 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Shell.Applications.C
 
         public static void SetProperties(System.Web.UI.Control editor, Editor.Field field, bool readOnly)
         {
+            // Get the Mapped Field
+            var mappedField =
+                MappedItems.FirstOrDefault(x => x.Type.Equals(MapItemType.Field) && x.Title.Equals(field.ItemField.Name) && !string.IsNullOrEmpty(x.FieldSource));
+
             ReflectionUtil.SetProperty(editor, "ID", field.ControlID);
             ReflectionUtil.SetProperty(editor, "ItemID", field.ItemField.Item.ID.ToString());
             ReflectionUtil.SetProperty(editor, "ItemVersion", field.ItemField.Item.Version.ToString());
             ReflectionUtil.SetProperty(editor, "ItemLanguage", field.ItemField.Item.Language.ToString());
             ReflectionUtil.SetProperty(editor, "FieldID", field.ItemField.ID.ToString());
-            ReflectionUtil.SetProperty(editor, "Source", field.ItemField.Source);
+            ReflectionUtil.SetProperty(editor, "Source", string.IsNullOrEmpty(mappedField?.FieldSource) ? field.ItemField.Source : mappedField.FieldSource);
             ReflectionUtil.SetProperty(editor, "ReadOnly", readOnly ? 1 : 0);
             ReflectionUtil.SetProperty(editor, "Disabled", readOnly ? 1 : 0);
         }

@@ -69,7 +69,6 @@
     <Content Include="App_Config\Include\EditorEnhancementToolkit\z.EditorEnhancementToolkit.Foundation.ContentEditor.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="sitecore modules\Shell\Editor Enhancement Toolkit\Mappings\BasicContentPage.xml" />
     <Content Include="sitecore modules\Shell\Editor Enhancement Toolkit\Mappings\ExampleXmlMapping.xml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -101,8 +100,10 @@
     <Compile Include="Rules\Actions\HideFields.cs" />
     <Compile Include="Rules\Actions\HideSections.cs" />
     <Compile Include="Rules\Actions\MapFile.cs" />
+    <Compile Include="Rules\Actions\SetFieldLabelStyle.cs" />
     <Compile Include="Rules\Actions\SetFieldNames.cs" />
     <Compile Include="Rules\Actions\SetSectionNames.cs" />
+    <Compile Include="Rules\Actions\SetSectionPanelStyle.cs" />
     <Compile Include="Rules\Actions\SetShortDescription.cs" />
     <Compile Include="Rules\Conditions\IsItemCondition.cs" />
     <Compile Include="Rules\ContentEditorRuleContext.cs" />
