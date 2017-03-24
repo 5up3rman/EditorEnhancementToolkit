@@ -102,6 +102,7 @@
     <Compile Include="Rules\Actions\MapFile.cs" />
     <Compile Include="Rules\Actions\SetFieldLabelStyle.cs" />
     <Compile Include="Rules\Actions\SetFieldNames.cs" />
+    <Compile Include="Rules\Actions\SetFieldSource.cs" />
     <Compile Include="Rules\Actions\SetSectionNames.cs" />
     <Compile Include="Rules\Actions\SetSectionPanelStyle.cs" />
     <Compile Include="Rules\Actions\SetShortDescription.cs" />
