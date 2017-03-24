@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<itemMappings>
+  <section>
+    <originalname>ArticleContent</originalname>
+    <newtitle>Blog Content</newtitle>
+  </section>
+  
+  <field>
+    <originalname>ArticleTitle</originalname>
+    <newtitle>Blog Title</newtitle>
+  </field>
+  <field>
+    <originalname>ArticleSummary</originalname>
+    <newtitle>Blog Summary</newtitle>
+  </field>
+  <field>
+    <originalname>ArticleAuthor</originalname>
+    <newtitle>Blog Author</newtitle>
+    <shortdescription>The source has been modified via the Rules Engine</shortdescription>
+  </field>
+  <field>
+    <originalname>ArticleDate</originalname>
+    <newtitle>Blog Date</newtitle>
+  </field>
+  <field>
+    <originalname>ArticleCopy</originalname>
+    <newtitle>Blog Copy</newtitle>
+  </field>
+  
+  <!-- Hide Article Specific Section -->
+  <section>
+    <originalname>ArticleSpecificContent</originalname>
+    <hide>true</hide>
+  </section>
+</itemMappings>
