@@ -139,7 +139,7 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Shell.Applications.C
             var fieldTitle = !string.IsNullOrEmpty(mappedField?.NewTitle) ? Translate.TextByLanguage(mappedField.NewTitle, language) : field.TemplateField.GetTitle(language);
 
             if (string.IsNullOrEmpty(fieldTitle))
-                fieldTitle = field.TemplateField.IgnoreDictionaryTranslations ? itemField.Name : Translate.Text(itemField.Name);
+                fieldTitle = Translate.Text(itemField.Name);
 
             if (!string.IsNullOrEmpty(mappedField?.NewTitle))
                 fieldTitle = !EditorFormatterConstants.ShowOriginalFieldToAdmins ? fieldTitle : $"{fieldTitle} <b>[{mappedField.Title}]</b>";
@@ -154,28 +154,55 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Shell.Applications.C
                 fieldTitle = $"{fieldTitle} {(!string.IsNullOrWhiteSpace(text) ? string.Concat("- ", text) : string.Empty)}";
             }
 
-            //fieldTitle = HttpUtility.HtmlEncode(fieldTitle);
+            var separator = false;
+            var attributes = new StringBuilder(200);
 
-            var label = field.ItemField.GetLabel(Arguments.IsAdministrator || Settings.ContentEditor.ShowFieldSharingLabels);
+            if ((Arguments.IsAdministrator || Settings.ContentEditor.ShowFieldSharingLabels) && (itemField.Unversioned || itemField.Shared))
+            {
+                attributes.Append("<span class=\"scEditorFieldLabelAdministrator\"> [");
+                if (itemField.Unversioned)
+                {
+                    attributes.Append(Translate.Text("unversioned"));
+                    separator = true;
+                }
+                if (itemField.Shared)
+                {
+                    if (separator)
+                        attributes.Append(", ");
+                    attributes.Append(Translate.Text("shared"));
+                    separator = true;
+                }
+            }
 
-            if (!string.IsNullOrEmpty(label))
-                fieldTitle = $"{fieldTitle} <span class=\"scEditorFieldLabelAdministrator\">[{label}]</span>";
+            Action<string> action = text =>
+            {
+                attributes.Append(separator ? ", " : "<span class=\"scEditorFieldLabelAdministrator\"> [");
+                attributes.Append(Translate.Text(text));
+            };
+            if (itemField.InheritsValueFromOtherItem)
+                action("original value");
+            else if (itemField.ContainsStandardValue)
+                action("standard value");
 
-            if (!string.IsNullOrEmpty(typeKey) && !typeKey.Equals("checkbox"))
-                fieldTitle += ":";
+            if (attributes.Length > 0)
+                attributes.Append("]</span>");
 
+            var str2 = fieldTitle + attributes;
+
+            if (!string.IsNullOrEmpty(typeKey) && typeKey != "checkbox")
+                str2 += ":";
             if (readOnly)
-                fieldTitle = $"<span class=\"scEditorFieldLabelDisabled\">{fieldTitle}</span>";
-
-            if (!string.IsNullOrWhiteSpace(helpLink))
-                fieldTitle = $"<a class=\"scEditorFieldLabelLink\" href=\"{helpLink}\" target=\"__help\">{fieldTitle}</a>";
-
+                str2 = "<span class=\"scEditorFieldLabelDisabled\">" + str2 + "</span>";
+            
+            if (helpLink.Length > 0)
+                str2 = "<a class=\"scEditorFieldLabelLink\" href=\"" + helpLink + "\" target=\"__help\">" + str2 + "</a>";
+            
             if (itemField.Description.Length > 0)
-                description = $" title=\"{HttpUtility.HtmlAttributeEncode(itemField.Description)}\"";
+                description = " title=\"" + itemField.Description + "\"";
 
-            var fieldLabel = $"<div class=\"scEditorFieldLabel\"{description} {labelStyle}>{fieldTitle}</div>";
+            var text1 = "<div class=\"" + "scEditorFieldLabel" + "\"" + description + ">" + str2 + "</div>";
 
-            AddLiteralControl(parent, fieldLabel);
+            AddLiteralControl(parent, text1);
         }
 
         public void RenderSectionBegin(System.Web.UI.Control parent, string controlId, string sectionName, string displayName, string icon, bool isCollapsed, bool renderFields, string sectionTitleBarStyle = "", string sectionOuterPanelStyle = "", string sectionInnerPanelStyle = "")

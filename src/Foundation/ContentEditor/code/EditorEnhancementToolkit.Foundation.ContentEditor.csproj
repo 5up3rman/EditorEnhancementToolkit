@@ -70,6 +70,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="sitecore modules\Shell\Editor Enhancement Toolkit\Mappings\ExampleXmlMapping.xml" />
+    <Content Include="sitecore modules\Shell\Editor Enhancement Toolkit\VirtualSectionMappings\VirtualSectionExample.xml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -4,6 +4,7 @@ using EditorEnhancementToolkit.Foundation.ContentEditor.Enum;
 using EditorEnhancementToolkit.Foundation.ContentEditor.Rules;
 using Sitecore.Configuration;
 using Sitecore.Data.Fields;
+using Sitecore.Globalization;
 using Sitecore.Pipelines.GetChromeData;
 
 namespace EditorEnhancementToolkit.Foundation.ContentEditor.Pipelines.GetChromeData
@@ -11,7 +12,7 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Pipelines.GetChromeD
     /// <summary>
     /// Displays the Vanity Field Name in the Experience Editor in place of the Field Name or Field Title
     /// </summary>
-    public class InitializeChromeCustomFieldDisplayName : Sitecore.ExperienceEditor.Pipelines.GetChromeData.InitializeChromeFieldDisplayName
+    public class InitializeChromeCustomFieldDisplayName : Sitecore.Pipelines.GetChromeData.GetFieldChromeData
     {
         public override void Process(GetChromeDataArgs args)
         {
@@ -29,18 +30,15 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Pipelines.GetChromeD
 
                 if (fld != null)
                 {
-                    args.ChromeData.DisplayName = fld.NewTitle;
-                    return;
+                    args.ChromeData.DisplayName = Translate.TextByLanguage(fld.NewTitle, args.Item?.Language ?? Language.Current);
+                    return; 
                 }
             }
 
-            var containsFallbackValue = field?.ContainsFallbackValue ?? false;
+            args.ChromeData.DisplayName = field?.DisplayName ?? field?.Name ?? string.Empty;
 
-            if (containsFallbackValue)
-                return;
-
-            if (!string.IsNullOrEmpty(field?.GetLabel(false)))
-                args.ChromeData.DisplayName += GetFieldDisplayName(field);
+            if (!string.IsNullOrEmpty(field?.ToolTip))
+                args.ChromeData.ExpandedDisplayName = field.ToolTip;
         }
     }
 }

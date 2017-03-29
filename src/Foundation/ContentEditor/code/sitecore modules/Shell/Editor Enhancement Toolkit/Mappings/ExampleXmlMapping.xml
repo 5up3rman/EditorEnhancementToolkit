@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <itemMappings>
   <section>
-    <originalname></originalname>
+    <originalname></originalname> <!-- Required -->
     <newtitle></newtitle>
 	<hide></hide>
   </section>
   <field>
-    <originalname></originalname>
+    <originalname></originalname> <!-- Required -->
     <newtitle></newtitle>
     <shortdescription></shortdescription>
 	<hide></hide>

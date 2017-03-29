@@ -84,9 +84,6 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Pipelines.GetContent
                     {
                         newSection = new Editor.Section(templateFieldSection);
 
-                        if (args.Item != null)
-                            newSection.ControlID += args.Item.ID.ToShortID().ToString();
-
                         sections.Add(newSection);
 
                         using (new SecurityDisabler())
@@ -95,12 +92,12 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Pipelines.GetContent
                             if (obj2 != null)
                             {
                                 newSection.CollapsedByDefault = obj2["Collapsed by Default"] == "1";
-                                newSection.DisplayName = obj2.GetUIDisplayName();
+                                newSection.DisplayName = obj2.DisplayName;
                             }
                         }
                     }
 
-                    var field2 = !(field.ID == FieldIDs.WorkflowState) && !(field.ID == FieldIDs.Workflow) || item.IsClone && Settings.ItemCloning.InheritWorkflowData ? new Editor.Field(field, templateField) : new Editor.Field(field, templateField, field.GetValue(false, false) ?? string.Empty);
+                    Editor.Field field2 = field.ID == FieldIDs.WorkflowState || field.ID == FieldIDs.Workflow ? new Editor.Field(field, templateField, field.GetValue(false, false) ?? string.Empty) : new Editor.Field(field, templateField);
                     newSection.Fields.Add(field2);
 
                     args.AddFieldInfo(field, field2.ControlID);
