@@ -44,7 +44,6 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.VirtualSectionMappin
             return new Editor.Section(id, title, iconPath, sortOrder)
             {
                 CollapsedByDefault = isCollapsed,
-                ControlID = $"virtualSection{id.ToShortID()}",
                 DisplayName = title,
                 Fields = {},
                 Icon = iconPath,

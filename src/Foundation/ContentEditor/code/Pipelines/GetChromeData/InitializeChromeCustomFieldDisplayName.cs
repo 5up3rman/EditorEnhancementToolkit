@@ -34,13 +34,7 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Pipelines.GetChromeD
                 }
             }
 
-            var containsFallbackValue = field?.ContainsFallbackValue ?? false;
-
-            if (containsFallbackValue)
-                return;
-
-            if (!string.IsNullOrEmpty(field?.GetLabel(false)))
-                args.ChromeData.DisplayName += GetFieldDisplayName(field);
+            base.Process(args);
         }
     }
 }

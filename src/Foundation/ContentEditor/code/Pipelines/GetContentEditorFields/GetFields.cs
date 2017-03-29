@@ -84,9 +84,6 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Pipelines.GetContent
                     {
                         newSection = new Editor.Section(templateFieldSection);
 
-                        if (args.Item != null)
-                            newSection.ControlID += args.Item.ID.ToShortID().ToString();
-
                         sections.Add(newSection);
 
                         using (new SecurityDisabler())
@@ -95,7 +92,7 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Pipelines.GetContent
                             if (obj2 != null)
                             {
                                 newSection.CollapsedByDefault = obj2["Collapsed by Default"] == "1";
-                                newSection.DisplayName = obj2.GetUIDisplayName();
+                                newSection.DisplayName = obj2.DisplayName;
                             }
                         }
                     }
