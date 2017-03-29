@@ -4,6 +4,7 @@ using EditorEnhancementToolkit.Foundation.ContentEditor.Enum;
 using EditorEnhancementToolkit.Foundation.ContentEditor.Rules;
 using Sitecore.Configuration;
 using Sitecore.Data.Fields;
+using Sitecore.Globalization;
 using Sitecore.Pipelines.GetChromeData;
 
 namespace EditorEnhancementToolkit.Foundation.ContentEditor.Pipelines.GetChromeData
@@ -29,7 +30,7 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Pipelines.GetChromeD
 
                 if (fld != null)
                 {
-                    var newTitle = fld.NewTitle;
+                    var newTitle = Translate.TextByLanguage(fld.NewTitle, args.Item.Language);
 
                     if (!field.ContainsFallbackValue && !string.IsNullOrEmpty(field.GetLabel(false)))
                         newTitle += $"{newTitle} [{field.GetLabel(false)}]";
