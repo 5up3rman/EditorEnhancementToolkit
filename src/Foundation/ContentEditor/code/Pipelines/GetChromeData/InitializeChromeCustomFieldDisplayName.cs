@@ -30,15 +30,12 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Pipelines.GetChromeD
 
                 if (fld != null)
                 {
-                    args.ChromeData.DisplayName = Translate.TextByLanguage(fld.NewTitle, args.Item?.Language ?? Language.Current);
+                    args.ChromeData.DisplayName = Translate.TextByLanguage(fld.NewTitle, args.Item.Language);
                     return; 
                 }
             }
 
-            args.ChromeData.DisplayName = field?.DisplayName ?? field?.Name ?? string.Empty;
-
-            if (!string.IsNullOrEmpty(field?.ToolTip))
-                args.ChromeData.ExpandedDisplayName = field.ToolTip;
+            base.Process(args);
         }
     }
 }
