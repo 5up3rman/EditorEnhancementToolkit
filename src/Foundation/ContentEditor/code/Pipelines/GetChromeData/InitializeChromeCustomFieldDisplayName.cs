@@ -20,27 +20,27 @@ namespace EditorEnhancementToolkit.Foundation.ContentEditor.Pipelines.GetChromeD
 
             var field = args.CustomData["field"] as Field;
 
-            if (args.Item != null)
+            if (args.Item != null && field != null)
             {
                 var rules = (ContentEditorRulesProcessor)Factory.CreateObject("editorEnhancedToolkit/contentEditorRulesProcessor", false);
                 rules.ProcessRules(args.Item);
 
-                var fld = rules.MappedItems?.FirstOrDefault(x => x.Type.Equals(MapItemType.Field) && x.Title.Equals(field?.Name) && !string.IsNullOrWhiteSpace(x.NewTitle));
+                var fld = rules.MappedItems?.FirstOrDefault(x => x.Type.Equals(MapItemType.Field) && x.Title.Equals(field.Name) && !string.IsNullOrWhiteSpace(x.NewTitle));
 
                 if (fld != null)
                 {
-                    args.ChromeData.DisplayName = fld.NewTitle;
+                    var newTitle = fld.NewTitle;
+
+                    if (!field.ContainsFallbackValue && !string.IsNullOrEmpty(field.GetLabel(false)))
+                        newTitle += $"{newTitle} [{field.GetLabel(false)}]";
+
+                    args.ChromeData.DisplayName = newTitle;
+
                     return;
                 }
             }
 
-            var containsFallbackValue = field?.ContainsFallbackValue ?? false;
-
-            if (containsFallbackValue)
-                return;
-
-            if (!string.IsNullOrEmpty(field?.GetLabel(false)))
-                args.ChromeData.DisplayName += GetFieldDisplayName(field);
+            base.Process(args);
         }
     }
 }
