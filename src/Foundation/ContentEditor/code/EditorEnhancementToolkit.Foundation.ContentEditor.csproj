@@ -97,6 +97,8 @@
     <Compile Include="Pipelines\GetChromeData\InitializeChromeCustomFieldDisplayName.cs" />
     <Compile Include="Pipelines\GetContentEditorFields\GetFields.cs" />
     <Compile Include="Pipelines\RenderContentEditor\RenderCustomizedContentEditor.cs" />
+    <Compile Include="Pipelines\RichTextContent\RichText.cs" />
+    <Compile Include="Pipelines\RichTextContent\SaveContent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rules\Actions\HideFields.cs" />
     <Compile Include="Rules\Actions\HideSections.cs" />
